@@ -9,7 +9,7 @@
 import UIKit
 
 class CQDrawerViewController: UIViewController {
-
+    
     var mainController:UIViewController?
     var leftController:UIViewController?
     var rightController:UIViewController?
@@ -51,7 +51,7 @@ class CQDrawerViewController: UIViewController {
         // 通知
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "showLeftSide", name: "showleft", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "showRightSide", name: "showright", object: nil)
-   
+        
     }
     func showLeftSide() {
         self.view.addSubview((self.leftController?.view)!)
@@ -73,8 +73,8 @@ class CQDrawerViewController: UIViewController {
         UIView.animateWithDuration(0.2, animations: { () -> Void in
             self.mainController?.view.frame = CGRectMake(0, 0, (self.view.frame.width), (self.view.frame.height))
             },completion: { (bool:Bool) -> Void in
-                    self.leftController?.view.removeFromSuperview()
-                    self.rightController?.view.removeFromSuperview()
+                self.leftController?.view.removeFromSuperview()
+                self.rightController?.view.removeFromSuperview()
         })
     }
     // 滑动手势
@@ -130,16 +130,16 @@ class CQDrawerViewController: UIViewController {
             isMoving = false
         }
         
-
+        
         // 右滑超过范围
         if (leftController != nil) && (trans.x > 0 && self.mainController?.view.frame.origin.x > leftWidth) {
             recognizer.setTranslation(CGPointMake(leftWidth-originx, 0), inView: self.view)
         }
-        // 左滑超过范围
+            // 左滑超过范围
         else if (rightController != nil) && trans.x < 0 && self.mainController?.view.frame.origin.x < -rightWidth {
             recognizer.setTranslation(CGPointMake(originx-rightWidth, 0), inView: self.view)
         }
-        // 正在滑动
+            // 正在滑动
         else if isMoving {
             // 无左侧栏
             if (leftController == nil) && (originx+x > 0){
@@ -154,10 +154,18 @@ class CQDrawerViewController: UIViewController {
             if (self.mainController?.view.frame.origin.x>0) {
                 y = leftScaleHeigth * ((self.mainController?.view.frame.origin.x)! / leftWidth)
                 self.rightController?.view.removeFromSuperview()
+                if self.view.subviews.count == 1 {
+                    self.view.addSubview((self.leftController?.view)!)
+                    self.view.sendSubviewToBack((self.leftController?.view)!)
+                }
             } else if (self.mainController?.view.frame.origin.x<0) {
-            // 右侧栏打开
+                // 右侧栏打开
                 y = rightScaleHeigth * (-(self.mainController?.view.frame.origin.x)! / rightWidth)
                 self.leftController?.view.removeFromSuperview()
+                if self.view.subviews.count == 1 {
+                    self.view.addSubview((self.rightController?.view)!)
+                    self.view.sendSubviewToBack((self.rightController?.view)!)
+                }
             }
             var height:CGFloat = (self.view.frame.height)
             height -= 2*y
@@ -169,7 +177,7 @@ class CQDrawerViewController: UIViewController {
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return UIStatusBarStyle.LightContent
     }
-
-
+    
+    
 }
 
